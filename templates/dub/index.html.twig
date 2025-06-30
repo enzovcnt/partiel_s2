@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dub{% endblock %}
+
+{% block body %}
+    <div>
+
+        <ul >
+            {% for dub in dub %}
+                    <li>
+                        {{ dub.id }} : {{ dub.version }}
+                    </li>
+                {% else %}
+                    <li>Aucune catégorie trouvée.</li>
+            {% endfor %}
+        </ul>
+
+        {{ form_start(form) }}
+
+        {{ form_row(form.version) }}
+
+
+        <button type="submit">
+            Envoyer
+        </button>
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

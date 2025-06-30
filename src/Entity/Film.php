@@ -25,8 +25,16 @@ class Film
     /**
      * @var Collection<int, Image>
      */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'film')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'film', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $image;
+
+    #[ORM\ManyToOne(inversedBy: 'film')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Dub $dub = null;
+
+    #[ORM\ManyToOne(inversedBy: 'film')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function __construct()
     {
@@ -88,6 +96,30 @@ class Film
                 $image->setFilm(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDub(): ?Dub
+    {
+        return $this->dub;
+    }
+
+    public function setDub(?Dub $dub): static
+    {
+        $this->dub = $dub;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

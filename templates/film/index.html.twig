@@ -16,10 +16,14 @@
                     </div>
                     <p>{{ film.name }}</p>
                     <p>{{ film.summary }}</p>
+                    <p>{{ film.dub.version }}</p>
+                    <p>{{ film.category.name }}</p>
                     <a href="{{ path('app_film_show', {id:film.id}) }}">
                         Voir
                     </a>
                 </div>
             {% endfor %}
+
+    <a href="{{ path('app_film_new') }}">+</a>
 
 {% endblock %}
