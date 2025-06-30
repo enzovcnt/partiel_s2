@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Film{% endblock %}
+
+{% block body %}
+    <div>
+        <div>
+            {% for images in screening.film.image %}
+                <div>
+                    <img src="{{ images.imageName
+                    ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
+                    : asset('assets/defaultImage/pomme.png') }}" alt="">
+                </div>
+            {% endfor %}
+        </div>
+        <p>Titre : {{ screening.film.name }}</p>
+        <p>Synopsis : {{ screening.film.summary }}</p>
+        <p>Durée : {{ screening.film.duration.format('%hh %im') }}</p>
+        <p>{{ screening.dub.version }}</p>
+        <p>Catégorie : {{ screening.film.category.name }}</p>
+        <p>Prix : {{ screening.price }}</p>
+        <p>Le {{ screening.schedule.days }} à {{ screening.schedule.hours|date('H:i') }}</p>
+
+        <p>Salle : {{ screening.room.number }}</p>
+    </div>
+            <a href="{{ path('app_screening') }}">
+                retour
+            </a>
+            <a href="{{ path('app_screening_edit', {id:screening.id}) }}">
+                edit
+            </a>
+            <a href="{{ path('app_screening_delete', {id:screening.id}) }}">
+                delete
+            </a>
+
+{% endblock %}

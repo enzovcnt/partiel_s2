@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Screening;
+use App\Form\ScreeningForm;
+use App\Repository\ScreeningRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class ScreeningController extends AbstractController
+{
+    #[Route('/screening', name: 'app_screening')]
+    public function index(ScreeningRepository $screeningRepository): Response
+    {
+        return $this->render('screening/index.html.twig', [
+            'screenings' => $screeningRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/screening/show/{id}', name: 'app_show_screening', priority: -1)]
+    public function show(Screening $screening): Response
+    {
+        return $this->render('screening/show.html.twig', [
+            'screening' => $screening,
+        ]);
+    }
+
+    #[Route('/screening/new', name: 'app_screening_new')]
+    public function new(Request $request, EntityManagerInterface $manager): Response
+    {
+        $screening = new Screening();
+        $form = $this->createForm(ScreeningForm::class, $screening);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->persist($screening);
+            $manager->flush();
+            return $this->redirectToRoute('app_show_screening', ['id' => $screening->getId()]);
+        }
+        return $this->render('screening/create.html.twig', [
+            'screening' => $screening,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/screening/{id}/edit', name: 'app_screening_edit')]
+    public function edit(Request $request, Screening $screening, EntityManagerInterface $manager): Response
+    {
+
+        $form = $this->createForm(ScreeningForm::class, $screening);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->flush();
+            return $this->redirectToRoute('app_show_screening', ['id' => $screening->getId()]);
+        }
+        return $this->render('screening/edit.html.twig', [
+            'screening' => $screening,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/screening/{id}/delete', name: 'app_screening_delete')]
+    public function delete(Screening $screening
+        , EntityManagerInterface $manager): Response
+    {
+
+        $manager->remove($screening);
+        $manager->flush();
+        return $this->redirectToRoute('app_screening');
+    }
+}

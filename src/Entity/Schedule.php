@@ -36,7 +36,11 @@ class Schedule
 
     public function __toString(): string
     {
-        return $this->hours->format('H:i');
+        if ($this->hours === null || $this->days === null) {
+            return 'Non défini';
+        }
+
+        return ucfirst($this->days) . ' à ' . $this->hours->format('H:i');
     }
 
     public function getId(): ?int
