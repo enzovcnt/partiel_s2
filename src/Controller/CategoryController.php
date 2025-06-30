@@ -31,4 +31,6 @@ final class CategoryController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    //finir le crud pour Category > au moins pouvoir tous les affichers, modifiers et supprimer sur la même page
 }

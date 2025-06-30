@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ScheduleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ScheduleRepository::class)]
@@ -18,8 +19,8 @@ class Schedule
     #[ORM\Column(length: 10)]
     private ?string $days = null;
 
-    #[ORM\Column]
-    private ?\DateTimeInterface $hours = null;
+    #[ORM\Column(type: Types::TIME_MUTABLE)] //faire gaffe pas utiliser DateTimeInterface
+    private ?\DateTime $hours = null;
 
     /**
      * @var Collection<int, Screening>
@@ -57,12 +58,12 @@ class Schedule
         return $this;
     }
 
-    public function getHours(): ?\DateTimeInterface
+    public function getHours(): ?\DateTime
     {
         return $this->hours;
     }
 
-    public function setHours(\DateTimeInterface $hours): static
+    public function setHours(\DateTime $hours): static
     {
         $this->hours = $hours;
 

@@ -10,6 +10,7 @@ class ScheduleFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        //pour fixture > changer en DateTime et pas en DateTimeImmutable
         $days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
         $hours = ['10:15', '13:45', '16:30', '19:00', '22:15'];
 
