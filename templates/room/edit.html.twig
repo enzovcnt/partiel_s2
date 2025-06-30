@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Film{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form)}}
+    {{ form_row(form.number)}}
+    {{ form_row(form.seats)}}
+    <button type="submit">Appliquer</button>
+    {{ form_end(form)}}
+
+{% endblock %}

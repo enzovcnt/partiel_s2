@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Film{% endblock %}
+
+{% block body %}
+        <div>
+            <p>{{ room.number }}</p>
+            <p>{{ room.seats }}</p>
+
+            <a href="{{ path('app_rooms') }}">
+                retour
+            </a>
+            <a href="{{ path('app_room_edit', {id:room.id}) }}">
+                edit
+            </a>
+            <a href="{{ path('app_room_delete', {id:room.id}) }}">
+                delete
+            </a>
+        </div>
+
+{% endblock %}

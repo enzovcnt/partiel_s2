@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RoomController!{% endblock %}
+
+{% block body %}
+    {% for room in rooms %}
+        <div>
+    <p>{{ room.number }}</p>
+    <p>{{ room.seats }}</p>
+    <a href="{{ path('app_room_show', {id:room.id}) }}">
+        Voir
+    </a>
+    </div>
+      {% endfor %}
+
+    <a href="{{ path('app_room_new') }}">+</a>
+{% endblock %}

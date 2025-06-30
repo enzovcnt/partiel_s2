@@ -9,7 +9,6 @@ use App\Entity\Image;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AppFixtures extends Fixture
 {
@@ -43,7 +42,7 @@ class AppFixtures extends Fixture
 
             $film->setDub($faker->randomElement($dubs));
 
-            // (Optionnel) Ajouter des images fictives
+
 
             for ($j = 0; $j < mt_rand(1, 3); $j++) {
                 $image = new Image();
