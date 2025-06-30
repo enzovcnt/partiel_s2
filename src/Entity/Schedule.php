@@ -19,7 +19,7 @@ class Schedule
     private ?string $days = null;
 
     #[ORM\Column]
-    private ?\DateInterval $hours = null;
+    private ?\DateTimeInterface $hours = null;
 
     /**
      * @var Collection<int, Screening>
@@ -32,10 +32,18 @@ class Schedule
         $this->screenings = new ArrayCollection();
     }
 
+
+    public function __toString(): string
+    {
+        return $this->hours->format('H:i');
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
+
 
     public function getDays(): ?string
     {
@@ -49,12 +57,12 @@ class Schedule
         return $this;
     }
 
-    public function getHours(): ?\DateInterval
+    public function getHours(): ?\DateTimeInterface
     {
         return $this->hours;
     }
 
-    public function setHours(\DateInterval $hours): static
+    public function setHours(\DateTimeInterface $hours): static
     {
         $this->hours = $hours;
 
