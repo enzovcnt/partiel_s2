@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Film{% endblock %}
+
+{% block body %}
+
+    <div>
+        {% for images in film.image %}
+            <div>
+                <img src="{{ images.imageName
+                ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
+                : asset('assets/defaultImage/pomme.png') }}" alt="">
+                <a href="{{ path('app_removeImage',{id:images.id}) }}">X</a>
+
+            </div>
+
+        {% endfor %}
+    </div>
+
+
+    {{ form_start(formImage) }}
+    {{ form_row(formImage.imageFile) }}
+    <button type="submit">send</button>
+    {{ form_end(formImage) }}
+
+    <a href="{{ path('app_film_show', {id:film.id}) }}">retour</a>
+
+{% endblock %}
