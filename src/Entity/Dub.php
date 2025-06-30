@@ -27,7 +27,7 @@ class Dub
     /**
      * @var Collection<int, Screening>
      */
-    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'cdub')]
+    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'dub')]
     private Collection $screenings;
 
     public function __construct()
@@ -95,7 +95,7 @@ class Dub
     {
         if (!$this->screenings->contains($screening)) {
             $this->screenings->add($screening);
-            $screening->setCdub($this);
+            $screening->setDub($this);
         }
 
         return $this;
@@ -105,8 +105,8 @@ class Dub
     {
         if ($this->screenings->removeElement($screening)) {
             // set the owning side to null (unless already changed)
-            if ($screening->getCdub() === $this) {
-                $screening->setCdub(null);
+            if ($screening->getDub() === $this) {
+                $screening->setDub(null);
             }
         }
 

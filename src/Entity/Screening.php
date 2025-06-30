@@ -19,7 +19,7 @@ class Screening
 
     #[ORM\ManyToOne(inversedBy: 'screenings')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Dub $cdub = null;
+    private ?Dub $dub = null;
 
     #[ORM\ManyToOne(inversedBy: 'screenings')]
     #[ORM\JoinColumn(nullable: false)]
@@ -45,14 +45,14 @@ class Screening
         return $this;
     }
 
-    public function getCdub(): ?Dub
+    public function getDub(): ?Dub
     {
-        return $this->cdub;
+        return $this->dub;
     }
 
-    public function setCdub(?Dub $cdub): static
+    public function setDub(?Dub $dub): static
     {
-        $this->cdub = $cdub;
+        $this->dub = $dub;
 
         return $this;
     }
