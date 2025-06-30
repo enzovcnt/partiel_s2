@@ -28,6 +28,10 @@ class Screening
     #[ORM\Column]
     private ?float $price = null;
 
+    #[ORM\ManyToOne(inversedBy: 'screenings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Schedule $schedule = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +81,18 @@ class Screening
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getSchedule(): ?Schedule
+    {
+        return $this->schedule;
+    }
+
+    public function setSchedule(?Schedule $schedule): static
+    {
+        $this->schedule = $schedule;
 
         return $this;
     }
