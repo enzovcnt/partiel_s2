@@ -36,9 +36,19 @@ class Film
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
+    /**
+     * @var Collection<int, Screening>
+     */
+    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'film')]
+    private Collection $screenings;
+
+    #[ORM\Column]
+    private ?\DateInterval $duration = null;
+
     public function __construct()
     {
         $this->image = new ArrayCollection();
+        $this->screenings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -120,6 +130,48 @@ class Film
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Screening>
+     */
+    public function getScreenings(): Collection
+    {
+        return $this->screenings;
+    }
+
+    public function addScreening(Screening $screening): static
+    {
+        if (!$this->screenings->contains($screening)) {
+            $this->screenings->add($screening);
+            $screening->setFilm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScreening(Screening $screening): static
+    {
+        if ($this->screenings->removeElement($screening)) {
+            // set the owning side to null (unless already changed)
+            if ($screening->getFilm() === $this) {
+                $screening->setFilm(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDuration(): ?\DateInterval
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(\DateInterval $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }
