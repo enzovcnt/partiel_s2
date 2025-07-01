@@ -9,10 +9,93 @@
     <p>Places totales : {{ screening.room.seats }}</p>
     <p>Places encore disponible : {{ available }}</p>
 
-    {{ form_start(form) }}
-    {{ form_row(form.numberOfSeats) }}
-    <button>Réserver</button>
-    {{ form_end(form) }}
+    <div id="seat-map" style="display: grid; grid-template-columns: repeat(10, 40px); gap: 5px;">
+
+        {% for seat in 1..screening.room.seats %}
+            <div class="seat" data-seat-number="{{ seat }}" style="width: 40px; height: 40px; border: 1px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                {{ seat }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button id="reserve-btn">Réserver</button>
+
+    <script>
+        const screeningId = {{ screening.id }};
+        const seatMap = document.getElementById('seat-map');
+        const reserveBtn = document.getElementById('reserve-btn');
+        let selectedSeats = [];
+
+        // Charger les places déjà réservées depuis la BDD
+        fetch(`/screening/{{ screening.id }}/reserved-seats`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                const reservedSeats = data.reservedSeats || [];
+                document.querySelectorAll('.seat').forEach(seat => {
+                    const seatNumber = parseInt(seat.dataset.seatNumber);
+                    if (reservedSeats.includes(seatNumber)) {
+                        seat.classList.add('reserved');
+                    }
+                });
+            });
+
+        seatMap.addEventListener('click', e => {
+            const seat = e.target;
+            if (!seat.classList.contains('seat')) return;
+
+            // Si la place est réservée, on ne peut pas la sélectionner
+            if (seat.style.backgroundColor === 'rgb(217, 83, 79)') return;
+
+            const seatNumber = parseInt(seat.dataset.seatNumber);
+
+            if (selectedSeats.includes(seatNumber)) {
+                // Désélectionner
+                selectedSeats = selectedSeats.filter(n => n !== seatNumber);
+                seat.style.backgroundColor = '';
+            } else {
+                // Sélectionner
+                selectedSeats.push(seatNumber);
+                seat.style.backgroundColor = '#5cb85c'; //vert pour marquer que c'est sélectionné
+            }
+
+            reserveBtn.disabled = selectedSeats.length === 0;
+        });
+
+        reserveBtn.addEventListener('click', () => {
+            if (selectedSeats.length === 0) return;
+
+            //envoie donnée côté serveur
+            fetch('/screening/{{ screening.id }}/reserve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ seats: selectedSeats }),
+            })
+                .then(async res => {
+                    const contentType = res.headers.get('content-type');
+                    const text = await res.text();
+                    //génére erreur et affiche le texte de l'erreur comme sur symfony dans la console
+                    if (!contentType || !contentType.includes('application/json')) {
+                        console.error('Réponse non JSON :', text);
+                        throw new Error('Réponse non JSON du serveur');
+                    }
+
+                    return JSON.parse(text);
+                })
+                .then(data => {
+                    if (data.success) {
+
+                        window.location.href = data.checkoutUrl;
+                    } else {
+                        alert('Erreur : ' + (data.message || ''));
+                    }
+                })
+                .catch(err => {
+                    alert('Erreur JS : ' + err.message);
+                });
+
+        });
+    </script>
 
 
 

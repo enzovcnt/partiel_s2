@@ -23,13 +23,15 @@ class StripeService
     {
         Stripe::setApiKey($this->secretKey);
 
+
+
         return StripeSession::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => ['name' => $productName],
-                    'unit_amount' => (int) ($amount * 100),
+                    'unit_amount' => $amount * 100,
                 ],
                 'quantity' => $quantity,
             ]],

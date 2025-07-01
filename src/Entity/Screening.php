@@ -50,7 +50,7 @@ class Screening
         return $this->id;
     }
 
-    public function getReservedSeats(): ?int
+    public function getTotalReservedSeats(): ?int
     {
         $total = 0;
         foreach($this->reservations as $reservations)
@@ -62,7 +62,7 @@ class Screening
 
     public function getAvailableSeats(): int
     {
-        return $this->room ? $this->room->getSeats() - $this->getReservedSeats() : 0;
+        return $this->room ? $this->room->getSeats() - $this->getTotalReservedSeats() : 0;
     }
 
     public function getFilm(): ?Film

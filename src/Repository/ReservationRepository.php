@@ -40,4 +40,23 @@ class ReservationRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
+    public function findReservedSeatsByScreening(int $screeningId): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('r.seatChoice')
+            ->where('r.screening = :screeningId')
+            ->setParameter('screeningId', $screeningId);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $reservedSeats = [];
+        foreach ($results as $row) {
+            if (!empty($row['seatChoice'])) {
+                $reservedSeats = array_merge($reservedSeats, $row['seatChoice']);
+            }
+        }
+        return array_unique($reservedSeats);
+    }
 }

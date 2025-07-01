@@ -6,10 +6,12 @@ use App\Entity\Reservation;
 use App\Entity\Screening;
 use App\Form\ReservationForm;
 use App\Form\ScreeningForm;
+use App\Repository\ReservationRepository;
 use App\Repository\ScreeningRepository;
 use App\Service\StripeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -23,6 +25,67 @@ final class ScreeningController extends AbstractController
         return $this->render('screening/index.html.twig', [
             'screenings' => $screeningRepository->findAll(),
         ]);
+    }
+
+    #[Route('/screening/{id}/reserved-seats', name: 'screening_reserved_seats')]
+    public function reservedSeats(Screening $screening, ReservationRepository $reservationRepo): JsonResponse
+    {
+        $reservedSeats = $reservationRepo->findReservedSeatsByScreening($screening->getId());
+
+        return new JsonResponse(['reservedSeats' => $reservedSeats]);
+    }
+
+
+    #[Route('/screening/{id}/reserve', name: 'screening_reserve', methods: ['POST'])]
+    public function reserve(
+        Screening $screening,
+        Request $request,
+        EntityManagerInterface $em,
+        ReservationRepository $reservationRepo,
+        StripeService $service
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return new JsonResponse(['success' => false, 'message' => 'JSON invalide : ' . json_last_error_msg()], 400);
+        }
+        $seatsToReserve = $data['seats'] ?? [];
+
+        if (empty($seatsToReserve)) {
+            return new JsonResponse(['success' => false, 'message' => 'Aucune place sélectionnée']);
+        }
+
+        $reservedSeats = $reservationRepo->findReservedSeatsByScreening($screening->getId());
+
+        foreach ($seatsToReserve as $seat) {
+            if (in_array($seat, $reservedSeats)) {
+                return new JsonResponse(['success' => false, 'message' => "La place $seat est déjà réservée."]);
+            }
+        }
+        $seatsToReserve = array_map('strval', $seatsToReserve);
+
+
+        $reservation = new Reservation();
+        $reservation->setScreening($screening);
+        $reservation->setOfUser($this->getUser());
+        $reservation->setSeatChoice($seatsToReserve);
+        $reservation->setNumberOfSeats(count($seatsToReserve));
+        $reservation->setCreatedAt(new \DateTime());
+        $reservation->setPaid(false);
+
+        $em->persist($reservation);
+        $em->flush();
+
+        $session = $service->createCheckoutSession(
+            $screening->getPrice(),
+            $reservation->getNumberOfSeats(),
+            $screening->getFilm()->getName(),
+            $this->generateUrl('app_payment_success', ['reservationId' => $reservation->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            $this->generateUrl('app_payment_cancel', ['reservationId' => $reservation->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+        );
+
+        return new JsonResponse(['success' => true, 'checkoutUrl' => $session->url]);
     }
 
     #[Route('/screening/show/{id}', name: 'app_show_screening', priority: -1)]
@@ -108,7 +171,8 @@ final class ScreeningController extends AbstractController
 
 
 
-            return $this->redirect($session->url);        }
+            return $this->redirect($session->url);
+        }
 
         return $this->render('screening/reservation.html.twig', [
             'screening' => $screening,

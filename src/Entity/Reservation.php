@@ -31,6 +31,9 @@ class Reservation
     #[ORM\Column]
     private ?bool $paid = null;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $seatChoice = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -93,6 +96,18 @@ class Reservation
     public function setPaid(bool $paid): static
     {
         $this->paid = $paid;
+
+        return $this;
+    }
+
+    public function getSeatChoice(): array
+    {
+        return $this->seatChoice;
+    }
+
+    public function setSeatChoice(array $seatChoice): static
+    {
+        $this->seatChoice = $seatChoice;
 
         return $this;
     }
