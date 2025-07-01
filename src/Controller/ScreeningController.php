@@ -7,11 +7,13 @@ use App\Entity\Screening;
 use App\Form\ReservationForm;
 use App\Form\ScreeningForm;
 use App\Repository\ScreeningRepository;
+use App\Service\StripeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ScreeningController extends AbstractController
 {
@@ -75,7 +77,12 @@ final class ScreeningController extends AbstractController
     }
 
     #[Route('/screening/{id}/reservation', name: 'app_screening_reservation')]
-    public function reservation(Screening $screening, EntityManagerInterface $manager, Request $request): Response
+    public function reservation(
+        Screening $screening,
+        EntityManagerInterface $manager,
+        Request $request,
+        StripeService $service,
+    ): Response
     {
         $user = $this->getUser();
         $reservation = new Reservation();
@@ -86,12 +93,22 @@ final class ScreeningController extends AbstractController
         $form = $this->createForm(ReservationForm::class, $reservation);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $reserveSeats = $reservation->getNumberOfSeats();
+            $reservation->setPaid(false);
             $manager->persist($reservation);
             $manager->flush();
 
-            $this->addFlash('success', 'Réservation confirmée !');
-            return $this->redirectToRoute('app_home');
-        }
+            $session = $service->createCheckoutSession(
+                $screening->getPrice(),
+                $reserveSeats,
+                $screening->getFilm()->getName(),
+                $this->generateUrl('app_payment_success', ['reservationId' => $reservation->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+                $this->generateUrl('app_payment_cancel', ['reservationId' => $reservation->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            );
+
+
+
+            return $this->redirect($session->url);        }
 
         return $this->render('screening/reservation.html.twig', [
             'screening' => $screening,
