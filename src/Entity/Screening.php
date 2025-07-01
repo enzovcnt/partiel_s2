@@ -50,6 +50,21 @@ class Screening
         return $this->id;
     }
 
+    public function getReservedSeats(): ?int
+    {
+        $total = 0;
+        foreach($this->reservations as $reservations)
+        {
+            $total += $reservations->getNumberOfSeats();
+        }
+        return $total;
+    }
+
+    public function getAvailableSeats(): int
+    {
+        return $this->room ? $this->room->getSeats() - $this->getReservedSeats() : 0;
+    }
+
     public function getFilm(): ?Film
     {
         return $this->film;

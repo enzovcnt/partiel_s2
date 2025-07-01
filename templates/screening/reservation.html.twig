@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ScreeningController!{% endblock %}
+
+{% block body %}
+
+    <h1>Réserver pour {{ screening.film.name }}</h1>
+    <p>Salle n° {{ screening.room.number }}</p>
+    <p>Places totales : {{ screening.room.seats }}</p>
+    <p>Places encore disponible : {{ available }}</p>
+
+    {{ form_start(form) }}
+    {{ form_row(form.numberOfSeats) }}
+    <button>Réserver</button>
+    {{ form_end(form) }}
+
+
+{% endblock %}

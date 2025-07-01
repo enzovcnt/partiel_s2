@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Reservation;
 use App\Entity\Screening;
+use App\Form\ReservationForm;
 use App\Form\ScreeningForm;
 use App\Repository\ScreeningRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,5 +72,31 @@ final class ScreeningController extends AbstractController
         $manager->remove($screening);
         $manager->flush();
         return $this->redirectToRoute('app_screening');
+    }
+
+    #[Route('/screening/{id}/reservation', name: 'app_screening_reservation')]
+    public function reservation(Screening $screening, EntityManagerInterface $manager, Request $request): Response
+    {
+        $user = $this->getUser();
+        $reservation = new Reservation();
+        $reservation->setScreening($screening);
+        $reservation->setOfUser($user);
+        $reservation->setCreatedAt(new \DateTime('now'));
+
+        $form = $this->createForm(ReservationForm::class, $reservation);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->persist($reservation);
+            $manager->flush();
+
+            $this->addFlash('success', 'Réservation confirmée !');
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('screening/reservation.html.twig', [
+            'screening' => $screening,
+            'available' => $screening->getAvailableSeats(),
+            'form' => $form->createView(),
+        ]);
     }
 }
