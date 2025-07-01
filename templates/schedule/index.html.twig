@@ -6,19 +6,18 @@
 
     <div>
 
-        <ul >
+        <ul>
             {% for schedule in schedules %}
-                <li>
-                    {{ schedule.days }} : {{ schedule.hours|date('H:i') }}
-                </li>
+                <li>{{ schedule }}</li>
             {% else %}
                 <li>Aucune catégorie trouvée.</li>
             {% endfor %}
         </ul>
 
+
         {{ form_start(form) }}
 
-        {{ form_row(form.days) }}
+        {{ form_row(form.date) }}
         {{ form_row(form.hours) }}
 
 

@@ -16,8 +16,8 @@ class Schedule
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
-    private ?string $days = null;
+//    #[ORM\Column(length: 10)]
+//    private ?string $days = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)] //faire gaffe pas utiliser DateTimeInterface
     private ?\DateTime $hours = null;
@@ -28,6 +28,9 @@ class Schedule
     #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'schedule')]
     private Collection $screenings;
 
+    #[ORM\Column]
+    private ?\DateTime $date = null;
+
     public function __construct()
     {
         $this->screenings = new ArrayCollection();
@@ -36,11 +39,14 @@ class Schedule
 
     public function __toString(): string
     {
-        if ($this->hours === null || $this->days === null) {
+        if ($this->date === null || $this->hours === null) {
             return 'Non défini';
         }
 
-        return ucfirst($this->days) . ' à ' . $this->hours->format('H:i');
+        $formatter = new \IntlDateFormatter('fr_FR', \IntlDateFormatter::LONG, \IntlDateFormatter::NONE, null, null, 'EEEE d MMMM');
+        $formattedDate = $formatter->format($this->date);
+
+        return ucfirst($formattedDate) . ' à ' . $this->hours->format('H:i');
     }
 
     public function getId(): ?int
@@ -50,17 +56,17 @@ class Schedule
 
 
 
-    public function getDays(): ?string
-    {
-        return $this->days;
-    }
-
-    public function setDays(string $days): static
-    {
-        $this->days = $days;
-
-        return $this;
-    }
+//    public function getDays(): ?string
+//    {
+//        return $this->days;
+//    }
+//
+//    public function setDays(string $days): static
+//    {
+//        $this->days = $days;
+//
+//        return $this;
+//    }
 
     public function getHours(): ?\DateTime
     {
@@ -100,6 +106,18 @@ class Schedule
                 $screening->setSchedule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }
