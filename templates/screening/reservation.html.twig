@@ -1,24 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ScreeningController!{% endblock %}
+{% block title %}Réserver - {{ screening.film.name }}{% endblock %}
 
 {% block body %}
+    <div class="max-w-4xl mx-auto p-6 space-y-6">
 
-    <h1>Réserver pour {{ screening.film.name }}</h1>
-    <p>Salle n° {{ screening.room.number }}</p>
-    <p>Places totales : {{ screening.room.seats }}</p>
-    <p>Places encore disponible : {{ available }}</p>
 
-    <div id="seat-map" style="display: grid; grid-template-columns: repeat(10, 40px); gap: 5px;">
+        <div class="bg-white rounded shadow p-4 space-y-2 text-center sm:text-left">
+            <h1 class="text-2xl font-bold text-gray-800">{{ screening.film.name }}</h1>
+            <p class="text-gray-600">Salle n° <strong>{{ screening.room.number }}</strong></p>
+            <p class="text-gray-600">Places totales : {{ screening.room.seats }}</p>
+            <p class="text-gray-600">Places disponibles : {{ available }}</p>
+        </div>
 
-        {% for seat in 1..screening.room.seats %}
-            <div class="seat" data-seat-number="{{ seat }}" style="width: 40px; height: 40px; border: 1px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                {{ seat }}
+
+        <div class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Choisissez vos places :</h2>
+
+            <div id="seat-map" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 justify-center">
+                {% for seat in 1..screening.room.seats %}
+                    <div class="seat w-10 h-10 border border-gray-600 flex items-center justify-center text-sm text-gray-700 rounded hover:bg-green-200 cursor-pointer"
+                         data-seat-number="{{ seat }}">
+                        {{ seat }}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+
+            <div class="flex justify-center mt-6">
+                <button id="reserve-btn"
+                        class="bg-red-600 text-white font-semibold px-6 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-700 transition"
+                        disabled>
+                    Réserver
+                </button>
+            </div>
+        </div>
     </div>
 
-    <button id="reserve-btn">Réserver</button>
+
+    <style>
+        .seat.reserved {
+            background-color: #d9534f !important;
+            color: white;
+            cursor: not-allowed;
+        }
+        .seat.selected {
+            background-color: #5cb85c !important;
+            color: white;
+        }
+    </style>
 
     <script>
         const screeningId = {{ screening.id }};
@@ -83,9 +112,10 @@
                     return JSON.parse(text);
                 })
                 .then(data => {
-                    if (data.success) {
-
+                    if (data.checkoutUrl) {
                         window.location.href = data.checkoutUrl;
+                    } else if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
                     } else {
                         alert('Erreur : ' + (data.message || ''));
                     }

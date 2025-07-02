@@ -37,7 +37,7 @@ class Screening
     /**
      * @var Collection<int, Reservation>
      */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'screening')]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'screening', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $reservations;
 
     public function __construct()

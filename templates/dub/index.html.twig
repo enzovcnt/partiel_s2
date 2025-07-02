@@ -3,27 +3,34 @@
 {% block title %}Dub{% endblock %}
 
 {% block body %}
-    <div>
+    <div class="max-w-3xl mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-6 text-center">Ajouter une version de Dub</h1>
 
-        <ul >
+        <ul class="mb-6 bg-white shadow rounded p-4 divide-y divide-gray-200">
             {% for dub in dub %}
-                    <li>
-                        {{ dub.id }} : {{ dub.version }}
-                    </li>
-                {% else %}
-                    <li>Aucune catégorie trouvée.</li>
+                <li class="py-2 text-gray-700">
+                    {{ dub.id }} : {{ dub.version }}
+                </li>
+            {% else %}
+                <li class="py-2 text-gray-500 italic">Aucune version trouvée.</li>
             {% endfor %}
         </ul>
 
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
 
-        {{ form_row(form.version) }}
+        <div>
+            {{ form_label(form.version, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.version, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500'}}) }}
+            {{ form_errors(form.version) }}
+        </div>
 
+        <div class="text-center">
+            <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Envoyer
+            </button>
+        </div>
 
-        <button type="submit">
-            Envoyer
-        </button>
         {{ form_end(form) }}
-
     </div>
 {% endblock %}

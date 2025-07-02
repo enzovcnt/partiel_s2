@@ -45,7 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Reservation>
      */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'ofUser')]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'ofUser', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $reservations;
 
     public function __construct()

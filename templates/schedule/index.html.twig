@@ -1,31 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ScheduleController!{% endblock %}
+{% block title %}Planning des Séances{% endblock %}
 
 {% block body %}
+    <div class="max-w-3xl mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-6 text-center">Ajouter une séance</h1>
 
-    <div>
-
-        <ul>
+        <ul class="mb-6 bg-white shadow rounded p-4 divide-y divide-gray-200">
             {% for schedule in schedules %}
-                <li>{{ schedule }}</li>
+                <li class="py-2 text-gray-700">{{ schedule }}</li>
             {% else %}
-                <li>Aucune catégorie trouvée.</li>
+                <li class="py-2 text-gray-500 italic">Aucune séance trouvée.</li>
             {% endfor %}
         </ul>
 
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
 
-        {{ form_start(form) }}
+        <div>
+            {{ form_label(form.date, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.date, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500'}}) }}
+            {{ form_errors(form.date) }}
+        </div>
 
-        {{ form_row(form.date) }}
-        {{ form_row(form.hours) }}
+        <div>
+            {{ form_label(form.hours, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.hours, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500'}}) }}
+            {{ form_errors(form.hours) }}
+        </div>
 
+        <div class="text-center">
+            <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Envoyer
+            </button>
+        </div>
 
-        <button type="submit">
-            Envoyer
-        </button>
         {{ form_end(form) }}
-
+        <a href=""></a>
     </div>
-
 {% endblock %}

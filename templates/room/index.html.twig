@@ -1,17 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RoomController!{% endblock %}
+{% block title %}Salles{% endblock %}
 
 {% block body %}
-    {% for room in rooms %}
-        <div>
-    <p>{{ room.number }}</p>
-    <p>{{ room.seats }}</p>
-    <a href="{{ path('app_room_show', {id:room.id}) }}">
-        Voir
-    </a>
-    </div>
-      {% endfor %}
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-center mb-6">Liste des salles</h1>
 
-    <a href="{{ path('app_room_new') }}">+</a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {% for room in rooms %}
+                <div class="bg-white shadow rounded-lg p-4">
+                    <p class="text-gray-700 font-semibold">Salle n°{{ room.number }}</p>
+                    <p class="text-gray-500 text-sm mb-4">{{ room.seats }} places</p>
+                    <a href="{{ path('app_room_show', {id: room.id}) }}"
+                       class="inline-block text-indigo-600 hover:underline text-sm font-medium">
+                        Voir les détails →
+                    </a>
+                </div>
+            {% else %}
+                <p class="col-span-full text-center text-gray-500 italic">Aucune salle enregistrée.</p>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="{{ path('app_room_new') }}"
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                + Ajouter une salle
+            </a>
+        </div>
+    </div>
 {% endblock %}

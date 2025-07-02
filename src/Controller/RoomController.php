@@ -30,12 +30,18 @@ final class RoomController extends AbstractController
     }
 
     #[Route('/room/new', name: 'app_room_new')]
-    public function new(Request $request, EntityManagerInterface $manager): Response
+    public function new(Request $request, EntityManagerInterface $manager, Room $room): Response
     {
         $room = new Room();
         $form = $this->createForm(RoomForm::class, $room);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($room->getNumber() !== null)
+            {
+                $this->addFlash('warning', 'Room already exists.');
+                return $this->redirectToRoute('app_room_new');
+
+            }
             $manager->persist($room);
             $manager->flush();
             return $this->redirectToRoute('app_room_show', ['id' => $room->getId()]);

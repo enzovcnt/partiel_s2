@@ -9,6 +9,7 @@ use App\Entity\Schedule;
 use App\Entity\Screening;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,7 +18,13 @@ class ScreeningForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('price')
+
+            ->add('price', ChoiceType::class, [
+                'choices' => [
+                    '7,50 €' => 7.50,
+                ],
+                'label' => 'Tarif',
+            ])
             ->add('film', EntityType::class, [
                 'class' => Film::class,
                 'choice_label' => 'name',

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ReservationController!{% endblock %}
+
+{% block body %}
+
+    <h1>Annulation de réservation non possible</h1>
+
+    <p>Bonjour {{ user.email }},</p>
+
+    <p>Nous vous informons que la période d'annulation de votre réservation pour le film <strong>{{ screening.film.name }}</strong> est maintenant terminée. Il n'est plus possible d'annuler votre réservation.</p>
+
+    <p>Merci de votre compréhension.</p>
+
+    <p>Cordialement,<br>L'équipe</p>
+
+{% endblock %}

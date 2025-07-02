@@ -3,28 +3,60 @@
 {% block title %}Films{% endblock %}
 
 {% block body %}
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-center">Films disponibles</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {% for film in films %}
-                <div>
-                    <div>
-                        {% for images in film.image %}
-                            <div>
-                                <img src="{{ images.imageName
-                                ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
-                                : asset('assets/defaultImage/pomme.png') }}" alt="">
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <p>{{ film.name }}</p>
-                    <p>{{ film.summary }}</p>
-                    <p>{{ film.duration.format('%hh %im') }}</p>
-                    <p>{{ film.dub.version }}</p>
-                    <p>{{ film.category.name }}</p>
-                    <a href="{{ path('app_film_show', {id:film.id}) }}">
-                        Voir
+                <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <a href="{{ path('app_film_show', {id: film.id}) }}">
+                        <div class="w-full h-64 bg-gray-200 relative">
+                            {% if film.image %}
+                                {% for images in film.image %}
+                                <img
+                                    src="{{ images.imageName
+                                    ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
+                                    : asset('assets/defaultImage/pomme.png') }}"
+                                    alt="{{ film.name }}"
+                                    class="object-cover w-full h-full"
+                                />
+                                {% endfor %}
+                            {% else %}
+                                <img src="{{ asset('assets/defaultImage/pomme.png') }}" alt="Image par défaut" class="object-cover w-full h-full" />
+                            {% endif %}
+                        </div>
                     </a>
+                    <div class="p-4">
+                        <h2 class="text-xl font-semibold mb-1 truncate">{{ film.name }}</h2>
+                        <p class="text-gray-600 mb-2 line-clamp-3">{{ film.summary }}</p>
+
+                        <div class="flex flex-wrap gap-2 text-sm text-gray-500 mb-3">
+                        <span class="bg-gray-200 rounded px-2 py-0.5">
+                            {{ film.duration.format('%hh %im') }}
+                        </span>
+                            <span class="bg-gray-200 rounded px-2 py-0.5">
+                            {{ film.dub.version }}
+                        </span>
+                            <span class="bg-gray-200 rounded px-2 py-0.5">
+                            {{ film.category.name }}
+                        </span>
+                        </div>
+
+                        <a href="{{ path('app_film_show', {id: film.id}) }}" class="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                            Voir le film
+                        </a>
+                    </div>
                 </div>
+            {% else %}
+                <p class="col-span-full text-center text-gray-500">Aucun film disponible pour le moment.</p>
             {% endfor %}
+        </div>
 
-    <a href="{{ path('app_film_new') }}">+</a>
-
+        <div class="mt-10 text-center">
+            <a href="{{ path('app_film_new') }}"
+               class="inline-block px-6 py-3 bg-green-600 text-white font-semibold rounded shadow hover:bg-green-700 transition">
+                + Ajouter un film
+            </a>
+        </div>
+    </div>
 {% endblock %}

@@ -7,10 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 class Film
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -175,4 +178,26 @@ class Film
 
         return $this;
     }
+
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context, mixed $payload)
+    {
+        if ($this->duration) {
+            //temps max autorisé
+            $maxHours = 2;
+            $maxMinutes = 15;
+
+            // convertir en minute
+            $totalMinutes = ($this->duration->h * 60) + $this->duration->i;
+
+            $maxTotalMinutes = ($maxHours * 60) + $maxMinutes;
+
+            if ($totalMinutes > $maxTotalMinutes) {
+                $context->buildViolation('La durée ne peut pas dépasser 2 heures et 15 minutes.')
+                    ->atPath('duration')
+                    ->addViolation();
+            }
+        }
+    }
+
 }

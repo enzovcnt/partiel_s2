@@ -1,21 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Film{% endblock %}
+{% block title %}Salle n°{{ room.number }}{% endblock %}
 
 {% block body %}
-        <div>
-            <p>{{ room.number }}</p>
-            <p>{{ room.seats }}</p>
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-center mb-6">Détails de la salle</h1>
 
-            <a href="{{ path('app_rooms') }}">
-                retour
-            </a>
-            <a href="{{ path('app_room_edit', {id:room.id}) }}">
-                edit
-            </a>
-            <a href="{{ path('app_room_delete', {id:room.id}) }}">
-                delete
-            </a>
+        <div class="bg-white shadow rounded-lg p-6 space-y-4 text-gray-700">
+            <div>
+                <p class="text-lg font-medium">Numéro de la salle :</p>
+                <p class="text-indigo-600 font-semibold">{{ room.number }}</p>
+            </div>
+
+            <div>
+                <p class="text-lg font-medium">Nombre de places :</p>
+                <p class="text-indigo-600 font-semibold">{{ room.seats }}</p>
+            </div>
         </div>
 
+        <div class="mt-6 flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{{ path('app_rooms') }}"
+               class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md shadow">
+                Retour
+            </a>
+
+            <a href="{{ path('app_room_edit', {id: room.id}) }}"
+               class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow">
+                Modifier
+            </a>
+
+            <a href="{{ path('app_room_delete', {id: room.id}) }}"
+               class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md shadow"
+               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette salle ?');">
+                Supprimer
+            </a>
+        </div>
+    </div>
 {% endblock %}

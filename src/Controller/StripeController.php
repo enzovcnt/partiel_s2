@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Reservation;
 use App\Entity\Screening;
 
+use App\Repository\ReservationRepository;
 use App\Service\StripeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,10 +18,13 @@ final class StripeController extends AbstractController
 {
     #[Route('/payment/success/{reservationId}', name: 'app_payment_success')]
     public function success(
-        Reservation $reservation,
+        int $reservationId,
+        ReservationRepository $reservationRepository,
         EntityManagerInterface $manager
-    ): Response {
-
+    ): Response
+    {
+        //chercher l'id manuellement sinon trouve pas
+        $reservation = $reservationRepository->find($reservationId);
         if (!$reservation) {
             throw $this->createNotFoundException('Réservation non trouvée.');
         }
@@ -37,7 +41,7 @@ final class StripeController extends AbstractController
     {
         $this->addFlash('warning', 'Le paiement a été annulé.');
 
-        return $this->redirectToRoute('app_screening_reservation', ['id' => $reservation]);
+        return $this->redirectToRoute('app_screening_reservation', ['id' => $reservation->getScreening()->getId()]);
     }
 
 }

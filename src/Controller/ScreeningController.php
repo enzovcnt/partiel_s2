@@ -71,11 +71,25 @@ final class ScreeningController extends AbstractController
         $reservation->setOfUser($this->getUser());
         $reservation->setSeatChoice($seatsToReserve);
         $reservation->setNumberOfSeats(count($seatsToReserve));
-        $reservation->setCreatedAt(new \DateTime());
+        $reservation->setCreatedAt(new \DateTime('now'));
         $reservation->setPaid(false);
 
         $em->persist($reservation);
+
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $reservation->setPaid(true);
+            $em->flush();
+
+            return new JsonResponse(['success' => true, 'redirectUrl' => $this->generateUrl('app_show_screening', [
+                'id' => $screening->getId()])
+            ]);
+        }
+        else
+        {
         $em->flush();
+        }
+
 
         $session = $service->createCheckoutSession(
             $screening->getPrice(),

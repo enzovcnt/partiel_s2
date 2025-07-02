@@ -38,6 +38,7 @@ final class FilmController extends AbstractController
         $form = $this->createForm(FilmForm::class, $film);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
             $manager->persist($film);
             $manager->flush();
             return $this->redirectToRoute('app_film_show', ['id' => $film->getId()]);

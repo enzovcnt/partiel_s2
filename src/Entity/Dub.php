@@ -21,7 +21,7 @@ class Dub
     /**
      * @var Collection<int, Film>
      */
-    #[ORM\OneToMany(targetEntity: Film::class, mappedBy: 'dub')]
+    #[ORM\OneToMany(targetEntity: Film::class, mappedBy: 'dub', )]
     private Collection $film;
 
     /**

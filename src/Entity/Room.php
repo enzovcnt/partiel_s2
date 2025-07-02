@@ -6,6 +6,8 @@ use App\Repository\RoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Room
@@ -24,7 +26,7 @@ class Room
     /**
      * @var Collection<int, Screening>
      */
-    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'room')]
+    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'room', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $screenings;
 
     public function __construct()
@@ -89,5 +91,21 @@ class Room
         }
 
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateRoom(ExecutionContextInterface $context, $payload): void
+    {
+        if ($this->number === 1 && $this->seats !== 85) {
+            $context->buildViolation('La salle 1 doit avoir exactement 85 places.')
+                ->atPath('seats')
+                ->addViolation();
+        }
+
+        if (in_array($this->number, [2, 3, 4, 5, 6]) && $this->seats !== 65) {
+            $context->buildViolation('Les salles 2 à 6 doivent avoir exactement 65 places.')
+                ->atPath('seats')
+                ->addViolation();
+        }
     }
 }
