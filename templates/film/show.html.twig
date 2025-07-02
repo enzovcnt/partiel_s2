@@ -63,9 +63,10 @@
                         {% for screening in film.screenings %}
                             <li class="flex justify-between items-center border-b border-gray-200 pb-2">
                                 <div>
-                                    <p class="font-medium">{{ screening.film.duration.format('%hh %im') }}</p>
+                                    <p class="font-medium">Date : {{ screening.schedule }}</p>
+                                    <p class="text-sm text-gray-600">{{ screening.film.duration.format('%hh %im') }}</p>
                                     <p class="text-sm text-gray-600">Salle : {{ screening.room.number }}</p>
-                                    <p class="text-sm text-gray-600">Date : {{ screening.schedule }}</p>
+
                                 </div>
                                 <a href="{{ path('app_screening_reservation', {id: screening.id}) }}"
                                    class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm">
