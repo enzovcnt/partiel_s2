@@ -16,6 +16,12 @@ final class CategoryController extends AbstractController
     #[Route('/category', name: 'app_category')]
     public function index(CategoryRepository $repository, Request $request, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $category = new Category();
         $form = $this->createForm(CategoryForm::class, $category);

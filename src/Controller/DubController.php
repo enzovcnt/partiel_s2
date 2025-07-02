@@ -17,6 +17,12 @@ final class DubController extends AbstractController
     #[Route('/dub', name: 'app_dub')]
     public function index(DubRepository $repository, Request $request, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $dub = new Dub();
         $form = $this->createForm(DubForm::class, $dub);

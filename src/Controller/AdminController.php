@@ -12,6 +12,12 @@ final class AdminController extends AbstractController
     #[Route('/', name: 'app_admin')]
     public function index(): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
         return $this->render('admin/index.html.twig', [
             'controller_name' => 'AdminController',
         ]);

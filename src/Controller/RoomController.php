@@ -32,6 +32,13 @@ final class RoomController extends AbstractController
     #[Route('/room/new', name: 'app_room_new')]
     public function new(Request $request, EntityManagerInterface $manager, RoomRepository $repository): Response
     {
+
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
         $room = new Room();
         $form = $this->createForm(RoomForm::class, $room);
         $form->handleRequest($request);
@@ -58,6 +65,13 @@ final class RoomController extends AbstractController
     public function edit(Request $request, Room $room, EntityManagerInterface $manager): Response
     {
 
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $form = $this->createForm(RoomForm::class, $room);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -73,6 +87,13 @@ final class RoomController extends AbstractController
     #[Route('/room/{id}/delete', name: 'app_room_delete')]
     public function delete(Room $room, EntityManagerInterface $manager): Response
     {
+
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $manager->remove($room);
         $manager->flush();

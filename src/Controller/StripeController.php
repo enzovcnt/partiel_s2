@@ -33,7 +33,7 @@ final class StripeController extends AbstractController
 
         $this->addFlash('success', 'Paiement validé ! Votre réservation est confirmée.');
 
-        return $this->redirectToRoute('app_home');
+        return $this->redirectToRoute('app_reservation');
     }
 
     #[Route('/payment/cancel/{reservationId}', name: 'app_payment_cancel')]

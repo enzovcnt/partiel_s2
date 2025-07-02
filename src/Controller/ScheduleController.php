@@ -17,6 +17,13 @@ final class ScheduleController extends AbstractController
     #[Route('/schedule', name: 'app_schedule')]
     public function new(Request $request, EntityManagerInterface $manager,ScheduleRepository $scheduleRepository): Response
     {
+
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
         $schedule = new Schedule();
         $form = $this->createForm(ScheduleForm::class, $schedule);
         $form->handleRequest($request);
@@ -37,6 +44,12 @@ final class ScheduleController extends AbstractController
     #[Route('/schedule/{id}/delete', name: 'app_schedule_delete')]
     public function delete(Schedule $schedule, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $manager->remove($schedule);
         $manager->flush();

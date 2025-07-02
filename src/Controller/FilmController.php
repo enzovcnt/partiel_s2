@@ -34,6 +34,12 @@ final class FilmController extends AbstractController
     #[Route('/film/new', name: 'app_film_new')]
     public function new(Request $request, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
         $film = new Film();
         $form = $this->createForm(FilmForm::class, $film);
         $form->handleRequest($request);
@@ -53,6 +59,12 @@ final class FilmController extends AbstractController
     #[Route('/film/{id}/edit', name: 'app_film_edit')]
     public function edit(Request $request, Film $film, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $form = $this->createForm(FilmForm::class, $film);
         $form->handleRequest($request);
@@ -69,6 +81,12 @@ final class FilmController extends AbstractController
     #[Route('/film/{id}/delete', name: 'app_film_delete')]
     public function delete(Film $film, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $manager->remove($film);
         $manager->flush();
@@ -78,6 +96,12 @@ final class FilmController extends AbstractController
     #[Route('/film/addimage/{id}', name: 'app_film_addimage')]
     public function addImage(Film $film, Request $request, EntityManagerInterface $manager) : Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $image = new Image();
         $formImage = $this->createForm(ImageForm::class, $image);
@@ -99,6 +123,12 @@ final class FilmController extends AbstractController
     #[Route('/film/removeImage/{id}', name: 'app_removeImage')]
     public function removeImage(Image $image, EntityManagerInterface $manager) : Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $postId = $image->getFilm()->getId();
         $manager->remove($image);

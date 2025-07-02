@@ -11,6 +11,16 @@
                     {{ flash_error }}
                 </div>
             {% endfor %}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="mb-4 px-4 py-3 rounded shadow text-sm font-medium
+                            {% if label == 'warning' %}
+                                bg-red-400-100 text-red-800
+                            {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
 
             <h1 class="text-center text-3xl font-extrabold text-gray-900">Register</h1>
 
@@ -50,5 +60,10 @@
 
             {{ form_end(registrationForm) }}
         </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ path('app_login') }}" class="inline-block text-indigo-600 hover:text-indigo-800 font-medium">
+            Se connecter
+        </a>
     </div>
 {% endblock %}

@@ -113,6 +113,12 @@ final class ScreeningController extends AbstractController
     #[Route('/screening/new', name: 'app_screening_new')]
     public function new(Request $request, EntityManagerInterface $manager, ScreeningRepository $screeningRepository): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
         $screening = new Screening();
         $form = $this->createForm(ScreeningForm::class, $screening);
         $form->handleRequest($request);
@@ -138,6 +144,12 @@ final class ScreeningController extends AbstractController
     #[Route('/screening/{id}/edit', name: 'app_screening_edit')]
     public function edit(Request $request, Screening $screening, EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $form = $this->createForm(ScreeningForm::class, $screening);
         $form->handleRequest($request);
@@ -155,6 +167,12 @@ final class ScreeningController extends AbstractController
     public function delete(Screening $screening
         , EntityManagerInterface $manager): Response
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('app_login');
+        }
+        if (!in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $manager->remove($screening);
         $manager->flush();
@@ -169,6 +187,10 @@ final class ScreeningController extends AbstractController
         StripeService $service,
     ): Response
     {
+        if(!$this->getUser()){
+            $this->addFlash('warning', 'il faut se connecter pour réserver ou créez vous un compte');
+            return $this->redirectToRoute('app_register');
+        }
         $user = $this->getUser();
         $reservation = new Reservation();
         $reservation->setScreening($screening);
