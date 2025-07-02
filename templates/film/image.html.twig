@@ -3,26 +3,55 @@
 {% block title %}Film{% endblock %}
 
 {% block body %}
+    <div class="max-w-4xl mx-auto p-6">
 
-    <div>
-        {% for images in film.image %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+            {% for images in film.image %}
+                <div class="relative rounded overflow-hidden shadow-lg bg-white">
+                    <img
+                        src="{{ images.imageName
+                        ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
+                        : asset('assets/defaultImage/pomme.png') }}"
+                        alt="Image du film"
+                        class="w-full h-48 object-cover"
+                    >
+                    <a href="{{ path('app_removeImage', {id: images.id}) }}"
+                       class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                       title="Supprimer l'image"
+                       aria-label="Supprimer l'image">
+                        ×
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-center text-gray-500 italic col-span-full">Aucune image disponible.</p>
+            {% endfor %}
+        </div>
+
+        <div class="bg-white shadow rounded p-6 max-w-md mx-auto">
+            {{ form_start(formImage, {'attr': {'class': 'space-y-4'}}) }}
+
             <div>
-                <img src="{{ images.imageName
-                ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
-                : asset('assets/defaultImage/pomme.png') }}" alt="">
-                <a href="{{ path('app_removeImage',{id:images.id}) }}">X</a>
-
+                {{ form_label(formImage.imageFile, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(formImage.imageFile, {'attr': {'class': 'mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500'}}) }}
+                {{ form_errors(formImage.imageFile) }}
             </div>
 
-        {% endfor %}
+            <div class="text-center">
+                <button type="submit"
+                        class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Envoyer
+                </button>
+            </div>
+
+            {{ form_end(formImage) }}
+        </div>
+
+        <div class="mt-6 text-center">
+            <a href="{{ path('app_film_show', {id: film.id}) }}"
+               class="inline-block text-indigo-600 hover:text-indigo-800 font-semibold">
+                ← Retour
+            </a>
+        </div>
+
     </div>
-
-
-    {{ form_start(formImage) }}
-    {{ form_row(formImage.imageFile) }}
-    <button type="submit">send</button>
-    {{ form_end(formImage) }}
-
-    <a href="{{ path('app_film_show', {id:film.id}) }}">retour</a>
-
 {% endblock %}

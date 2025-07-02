@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class FilmController extends AbstractController
 {
-    #[Route('/films', name: 'app_film')]
+    #[Route('/', name: 'app_film')]
     public function index(FilmRepository $filmRepository): Response
     {
         return $this->render('film/index.html.twig', [
