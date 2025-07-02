@@ -42,7 +42,7 @@ class Film
     /**
      * @var Collection<int, Screening>
      */
-    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'film')]
+    #[ORM\OneToMany(targetEntity: Screening::class, mappedBy: 'film',orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $screenings;
 
     #[ORM\Column]
