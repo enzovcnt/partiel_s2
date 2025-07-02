@@ -51,7 +51,10 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
-            return $security->login($user, 'form_login', 'main'); //permet de se llogin direct et le user et vérifié comme ça
+            $this->addFlash('success', 'Un e-mail de confirmation vous a été envoyé. Veuillez vérifier votre boîte mail.');
+
+            return $this->redirectToRoute('app_register');
+            //permet de se llogin direct et le user et vérifié comme ça
         }
 
         return $this->render('registration/register.html.twig', [
