@@ -33,6 +33,7 @@
                 <p><strong>Synopsis :</strong> {{ film.summary }}</p>
 
                 <div class="flex flex-wrap gap-4 mt-6">
+                    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
                     <a href="{{ path('app_film_edit', {id: film.id}) }}"
                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                         Modifier
@@ -45,6 +46,7 @@
                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
                         Ajouter une image
                     </a>
+                    {% endif %}
                     <a href="{{ path('app_film') }}"
                        class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
                         Retour à la liste

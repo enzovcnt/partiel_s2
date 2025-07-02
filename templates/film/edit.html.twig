@@ -3,14 +3,39 @@
 {% block title %}Film{% endblock %}
 
 {% block body %}
+    <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
 
-    {{ form_start(form)}}
-    {{ form_row(form.name)}}
-    {{ form_row(form.summary)}}
-    {{ form_row(form.dub)}}
-    {{ form_row(form.category) }}
-    {{ form_row(form.duration) }}
-    <button type="submit">Appliquer</button>
-    {{ form_end(form)}}
+        {{ form_row(form.name, {
+            'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'}
+        }) }}
 
+        {{ form_row(form.summary, {
+            'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500', 'rows': '4'}
+        }) }}
+
+        {{ form_row(form.dub, {
+            'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'}
+        }) }}
+
+        {{ form_row(form.category, {
+            'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'}
+        }) }}
+
+        {{ form_row(form.duration, {
+            'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'}
+        }) }}
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-md transition">
+            Appliquer
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+    <div class="mt-6 text-center">
+        <a href="{{ path('app_film_show', {id: film.id}) }}"
+           class="inline-block text-indigo-600 hover:text-indigo-800 font-semibold">
+            ← Retour
+        </a>
+    </div>
 {% endblock %}
