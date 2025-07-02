@@ -1,39 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Film{% endblock %}
+{% block title %}Séance{% endblock %}
 
 {% block body %}
-    <div>
-        <div>
-            {% for images in screening.film.image %}
-                <div>
-                    <img src="{{ images.imageName
-                    ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
-                    : asset('assets/defaultImage/pomme.png') }}" alt="">
-                </div>
-            {% endfor %}
+    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+
+        <div class="flex flex-col md:flex-row md:space-x-6 mb-6">
+            <div class="md:w-1/3 grid grid-cols-1 gap-4">
+                {% for images in screening.film.image %}
+                    <div class="overflow-hidden rounded-lg shadow-md">
+                        <img
+                            src="{{ images.imageName
+                            ? vich_uploader_asset(images, 'imageFile') | imagine_filter('main')
+                            : asset('assets/defaultImage/pomme.png') }}"
+                            alt="Image du film"
+                            class="object-cover w-full h-48 md:h-full"
+                        >
+                    </div>
+                {% else %}
+                    <div class="text-gray-500 italic">Aucune image disponible.</div>
+                {% endfor %}
+            </div>
+
+            <div class="md:w-2/3 mt-4 md:mt-0 space-y-3 text-gray-700">
+                <p><span class="font-semibold text-gray-900">Titre :</span> {{ screening.film.name }}</p>
+                <p><span class="font-semibold text-gray-900">Synopsis :</span> {{ screening.film.summary }}</p>
+                <p><span class="font-semibold text-gray-900">Durée :</span> {{ screening.film.duration.format('%hh %im') }}</p>
+                <p><span class="font-semibold text-gray-900">Version :</span> {{ screening.dub.version }}</p>
+                <p><span class="font-semibold text-gray-900">Catégorie :</span> {{ screening.film.category.name }}</p>
+                <p><span class="font-semibold text-gray-900">Prix :</span> {{ screening.price }} €</p>
+                <p><span class="font-semibold text-gray-900">Date :</span> {{ screening.schedule }}</p>
+                <p><span class="font-semibold text-gray-900">Salle :</span> {{ screening.room.number }}</p>
+            </div>
         </div>
-        <p>Titre : {{ screening.film.name }}</p>
-        <p>Synopsis : {{ screening.film.summary }}</p>
-        <p>Durée : {{ screening.film.duration.format('%hh %im') }}</p>
-        <p>{{ screening.dub.version }}</p>
-        <p>Catégorie : {{ screening.film.category.name }}</p>
-        <p>Prix : {{ screening.price }}</p>
-        <p>Le {{ screening.schedule }}</p>
 
-        <p>Salle : {{ screening.room.number }}</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-6">
+            <a href="{{ path('app_screening') }}"
+               class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
+                Retour
+            </a>
+            <a href="{{ path('app_screening_edit', {id:screening.id}) }}"
+               class="inline-block px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
+                Editer
+            </a>
+            <a href="{{ path('app_screening_delete', {id:screening.id}) }}"
+               class="inline-block px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+               onclick="return confirm('Voulez-vous vraiment supprimer cette séance ?');">
+                Supprimer
+            </a>
+{#            <a href="{{ path('app_screening_reservation', {id:screening.id}) }}"#}
+{#               class="inline-block px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">#}
+{#                Réservation#}
+{#            </a>#}
+        </div>
     </div>
-            <a href="{{ path('app_screening') }}">
-                retour
-            </a>
-            <a href="{{ path('app_screening_edit', {id:screening.id}) }}">
-                edit
-            </a>
-            <a href="{{ path('app_screening_delete', {id:screening.id}) }}">
-                delete
-            </a>
-    <a href="{{ path('app_screening_reservation', {id:screening.id}) }}">
-        reservation
-    </a>
-
 {% endblock %}

@@ -111,12 +111,20 @@ final class ScreeningController extends AbstractController
     }
 
     #[Route('/screening/new', name: 'app_screening_new')]
-    public function new(Request $request, EntityManagerInterface $manager): Response
+    public function new(Request $request, EntityManagerInterface $manager, ScreeningRepository $screeningRepository): Response
     {
         $screening = new Screening();
         $form = $this->createForm(ScreeningForm::class, $screening);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $existing = $screeningRepository->findOneBy([
+                'room' => $screening->getRoom(),
+                'schedule' => $screening->getSchedule(),
+            ]);
+            if ($existing) {
+                $this->addFlash('error', 'Une séance existe déjà à cette date et à cette heure dans cette salle.');
+                return $this->redirectToRoute('app_screening_new');
+            }
             $manager->persist($screening);
             $manager->flush();
             return $this->redirectToRoute('app_show_screening', ['id' => $screening->getId()]);
