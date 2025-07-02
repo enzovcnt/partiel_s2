@@ -24,7 +24,7 @@
 
             <div class="md:w-2/3 mt-4 md:mt-0 space-y-3 text-gray-700">
                 <p><span class="font-semibold text-gray-900">Titre :</span> {{ screening.film.name }}</p>
-                <p><span class="font-semibold text-gray-900">Synopsis :</span> {{ screening.film.summary }}</p>
+                <p class="whitespace-pre-line break-words overflow-hidden"><span class="font-semibold text-gray-900 ">Synopsis :</span> {{ screening.film.summary }}</p>
                 <p><span class="font-semibold text-gray-900">Durée :</span> {{ screening.film.duration.format('%hh %im') }}</p>
                 <p><span class="font-semibold text-gray-900">Version :</span> {{ screening.dub.version }}</p>
                 <p><span class="font-semibold text-gray-900">Catégorie :</span> {{ screening.film.category.name }}</p>
