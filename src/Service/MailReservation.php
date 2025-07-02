@@ -19,7 +19,7 @@ class MailReservation
     public function sendNoReservationCancellationEmail(User $user,Screening $screening): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('app@enzovincent.org', 'AppMailgun'))
+            ->from(new Address('mail@enzovincent.org', 'AppMail'))
             ->to($user->getEmail())
             ->subject('Annulation de réservation non possible')
             ->htmlTemplate('reservation/cancel_email.html.twig')
