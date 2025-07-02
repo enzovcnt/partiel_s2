@@ -54,7 +54,8 @@ final class ReservationController extends AbstractController
         $intervalInSeconds = $startDateTime->getTimestamp() - $now->getTimestamp();
 
 
-        if ($intervalInSeconds <= 600) {
+        if ($intervalInSeconds <= 600 && $startDateTime > $now)
+        {
             //attention à bien avoir le bon fuseaux horaire
             $mailReservation->sendNoReservationCancellationEmail($reservation->getOfUser(), $screening);
 
